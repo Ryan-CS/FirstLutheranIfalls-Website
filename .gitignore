@@ -1,0 +1,6 @@
+_backups/
+logs/
+node_modules/
+*.tmp
+*.temp
+*.swp

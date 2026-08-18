@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>First Lutheran - News &amp; Social</title>
+    <link rel="stylesheet" href="/assets/fonts.css" />
+    <link rel="stylesheet" href="/assets/site.css" />
+    <script src="/assets/site.js" defer></script>
+    <style>
+      .social-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      .social-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: opacity 0.2s;
+      }
+      .social-btn:hover { opacity: 0.85; color: #fff; }
+      .social-btn--fb { background: var(--cedar); }
+      .social-btn--ig { background: var(--clay); }
+      .social-btn--yt { background: var(--brick); }
+
+      /* Make RSS.app wall fill the container */
+      .rss-wall-wrap {
+        background: #fff;
+        border: 1px solid #eadccc;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .rss-wall-wrap rssapp-wall {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .rss-wall-wrap iframe {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 12px;
+      }
+    </style>
+  </head>
+  <body class="page-posts">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="navbar">
+        <div class="brand">
+          <span class="brand__title">First Lutheran Church</span>
+          <span class="brand__subtitle">International Falls, Minnesota</span>
+        </div>
+        <button class="nav-toggle" type="button" aria-expanded="false">Menu</button>
+        <nav class="nav-links" data-open="false">
+          <a href="/">Home</a>
+          <div class="nav-dropdown">
+            <button class="nav-dropdown__toggle" type="button" aria-expanded="false">About</button>
+            <div class="nav-dropdown__menu" data-open="false">
+              <a href="/who-we-are.html">Who We Are</a>
+              <a href="/staff.html">Staff &amp; Council</a>
+              <a href="/faq.html">FAQ</a>
+            </div>
+          </div>
+          <div class="nav-dropdown">
+            <button class="nav-dropdown__toggle" type="button" aria-expanded="false">Ministries</button>
+            <div class="nav-dropdown__menu" data-open="false">
+              <a href="/community-outreach.html">Community Outreach</a>
+              <a href="/first-lutheran-women.html">First Lutheran Women</a>
+              <a href="/youth.html">Youth</a>
+            </div>
+          </div>
+          <a href="/calendar.html">Calendar</a>
+          <a href="/newsletter.html">Newsletter</a>
+          <a href="/livestream.html">Livestream</a>
+          <a href="/contact-us.html">Contact</a>
+          <a href="/posts.html">News</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero__inner">
+        <div>
+          <div class="kicker">News</div>
+          <h1>News &amp; Social</h1>
+          <p>Stay connected with First Lutheran Church. Follow us on social media for the latest updates, photos, and announcements.</p>
+        </div>
+      </div>
+    </section>
+
+    <main id="main" class="section">
+      <div class="section__inner" style="max-width:1200px;">
+
+        <div class="social-links">
+          <a href="https://www.facebook.com/FLCIFalls" target="_blank" rel="noopener" class="social-btn social-btn--fb">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Facebook
+          </a>
+          <a href="https://www.instagram.com/firstlutheranc/" target="_blank" rel="noopener" class="social-btn social-btn--ig">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            Instagram
+          </a>
+          <a href="https://www.youtube.com/@firstlutheranchurchelca2479" target="_blank" rel="noopener" class="social-btn social-btn--yt">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            YouTube
+          </a>
+        </div>
+
+        <h2 class="section__title">Recent Posts</h2>
+        <div class="rss-wall-wrap">
+          <rssapp-wall id="_GPuPo3EP2jmB1egS"></rssapp-wall>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>
+          <h4>Visit</h4>
+          <p>123 Wayside Lane<br>International Falls, MN 56649</p>
+        </div>
+        <div>
+          <h4>Office Hours</h4>
+          <p>Mon-Thu 10:00 AM-2:00 PM<br>Fri 9:00 AM-12:00 PM</p>
+        </div>
+        <div>
+          <h4>Worship</h4>
+          <p>Sunday 11:00 AM in the Sanctuary</p>
+          <a href="/livestream.html">Livestream</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://widget.rss.app/v1/wall.js" async></script>
+  </body>
+</html>
