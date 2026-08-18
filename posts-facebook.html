@@ -1,17 +1,3 @@
-<!--
-  FACEBOOK API VERSION (not yet active - parked here for later)
-
-  To activate this page:
-  1. Rename this file to posts.html (replacing the RSS.app version)
-  2. Set up a Facebook Developer App at https://developers.facebook.com (free)
-  3. Generate a Page Access Token for the FLCIFalls page via Graph API Explorer
-  4. Set the env var before starting the server:
-       $env:FB_ACCESS_TOKEN = "your-page-access-token"
-  5. The server endpoint /__api/facebook-posts is already wired up in dev.mjs
-
-  This version renders individual fb-post embeds in a 4-column grid with
-  "Load More" pagination via the Facebook Graph API + JS SDK.
--->
 <!doctype html>
 <html lang="en">
   <head>
@@ -44,64 +30,23 @@
       .social-btn--ig { background: var(--clay); }
       .social-btn--yt { background: var(--brick); }
 
-      .fb-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-      }
-      @media (max-width: 1000px) {
-        .fb-grid { grid-template-columns: repeat(3, 1fr); }
-      }
-      @media (max-width: 740px) {
-        .fb-grid { grid-template-columns: repeat(2, 1fr); }
-      }
-      @media (max-width: 480px) {
-        .fb-grid { grid-template-columns: 1fr; }
-      }
-
-      .fb-embed-cell {
+      /* Make RSS.app wall fill the container */
+      .rss-wall-wrap {
         background: #fff;
         border: 1px solid #eadccc;
-        border-radius: 16px;
-        overflow: hidden;
+        border-radius: 20px;
+        padding: 24px;
         box-shadow: var(--shadow);
-        min-height: 300px;
+        overflow: hidden;
       }
-
-      /* Force FB SDK iframes to fill the card */
-      .fb-grid .fb-post,
-      .fb-grid .fb-post > span,
-      .fb-grid .fb-post > span > iframe,
-      .fb-grid .fb_iframe_widget,
-      .fb-grid .fb_iframe_widget span,
-      .fb-grid .fb_iframe_widget iframe {
+      .rss-wall-wrap rssapp-wall {
         width: 100% !important;
+        max-width: 100% !important;
       }
-
-      .load-more-wrap {
-        text-align: center;
-        margin-top: 32px;
-      }
-      .load-more-btn {
-        background: var(--cedar);
-        color: #fff;
-        border: none;
-        padding: 14px 32px;
-        border-radius: 999px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        font-family: inherit;
-        transition: opacity 0.2s;
-      }
-      .load-more-btn:hover { opacity: 0.85; }
-      .load-more-btn:disabled { opacity: 0.5; cursor: default; }
-
-      .posts-status {
-        text-align: center;
-        padding: 40px 0;
-        color: var(--muted);
-        font-size: 1.05rem;
+      .rss-wall-wrap iframe {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 12px;
       }
     </style>
   </head>
@@ -170,10 +115,8 @@
         </div>
 
         <h2 class="section__title">Recent Posts</h2>
-        <div id="fb-grid" class="fb-grid"></div>
-        <div id="posts-status" class="posts-status">Loading posts...</div>
-        <div id="load-more-wrap" class="load-more-wrap" hidden>
-          <button id="load-more-btn" class="load-more-btn">Load More</button>
+        <div class="rss-wall-wrap">
+          <rssapp-wall id="_GPuPo3EP2jmB1egS"></rssapp-wall>
         </div>
 
       </div>
@@ -197,96 +140,6 @@
       </div>
     </footer>
 
-    <!-- Facebook JS SDK -->
-    <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous"
-      src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v21.0">
-    </script>
-
-    <script>
-      (function () {
-        var grid = document.getElementById("fb-grid");
-        var status = document.getElementById("posts-status");
-        var loadWrap = document.getElementById("load-more-wrap");
-        var loadBtn = document.getElementById("load-more-btn");
-        var afterCursor = "";
-        var BATCH = 8;
-
-        function renderPost(post) {
-          var cell = document.createElement("div");
-          cell.className = "fb-embed-cell";
-
-          var fbPost = document.createElement("div");
-          fbPost.className = "fb-post";
-          fbPost.setAttribute("data-href", post.url);
-          fbPost.setAttribute("data-width", "500");
-          fbPost.setAttribute("data-show-text", "true");
-
-          cell.appendChild(fbPost);
-          return cell;
-        }
-
-        function parseEmbeds() {
-          // Tell the FB SDK to parse any new fb-post divs
-          if (window.FB && window.FB.XFBML) {
-            window.FB.XFBML.parse(grid);
-          }
-        }
-
-        async function loadPosts() {
-          loadBtn.disabled = true;
-          loadBtn.textContent = "Loading...";
-          try {
-            var url = "/__api/facebook-posts?limit=" + BATCH +
-              (afterCursor ? "&after=" + encodeURIComponent(afterCursor) : "");
-            var resp = await fetch(url);
-            if (!resp.ok) throw new Error("Failed to load posts");
-            var data = await resp.json();
-
-            if (data.posts.length === 0 && grid.children.length === 0) {
-              status.textContent = "No posts available.";
-              return;
-            }
-
-            status.hidden = true;
-            data.posts.forEach(function (post) {
-              grid.appendChild(renderPost(post));
-            });
-
-            // Parse the newly added fb-post divs
-            parseEmbeds();
-
-            afterCursor = data.after || "";
-            if (data.hasMore) {
-              loadWrap.hidden = false;
-              loadBtn.disabled = false;
-              loadBtn.textContent = "Load More";
-            } else {
-              loadWrap.hidden = true;
-            }
-          } catch (err) {
-            if (grid.children.length === 0) {
-              status.textContent = "Unable to load posts. Visit our Facebook page for the latest news.";
-            } else {
-              loadBtn.textContent = "Error - Try Again";
-              loadBtn.disabled = false;
-            }
-          }
-        }
-
-        loadBtn.addEventListener("click", loadPosts);
-
-        // Wait for FB SDK to be ready, then load first batch
-        window.fbAsyncInit = function () {
-          FB.init({ xfbml: false, version: "v21.0" });
-          loadPosts();
-        };
-
-        // Fallback if SDK already loaded or fails
-        setTimeout(function () {
-          if (grid.children.length === 0) loadPosts();
-        }, 3000);
-      })();
-    </script>
+    <script src="https://widget.rss.app/v1/wall.js" async></script>
   </body>
 </html>

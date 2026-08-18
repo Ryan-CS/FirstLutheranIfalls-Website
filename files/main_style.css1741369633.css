@@ -558,7 +558,7 @@ body.splash-page .unite-header .hamburger span:after {
 }
 .wsite-header-section,
 .banner-wrap.wsite-background {
-  background: url(theme/images/default-bg.jpg%3F1741369633) no-repeat center center;
+  background: url(theme/images/default-bg.jpg) no-repeat center center;
   background-size: cover;
 }
 .header-page .wsite-header-section {
@@ -695,7 +695,7 @@ input[type="checkbox"] {
   text-indent: 0.01px;
   text-overflow: "";
   height: 40px;
-  background: transparent url(theme/images/select-dropdown.png%3F1741369633) 97% center no-repeat;
+  background: transparent url(theme/images/select-dropdown.png) 97% center no-repeat;
 }
 input[type="radio"],
 input[type="checkbox"] {
