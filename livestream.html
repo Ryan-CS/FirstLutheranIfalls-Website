@@ -60,14 +60,15 @@
         <div class="legacy">
           <div class="event-card">
             <iframe
+              id="yt-player"
               title="First Lutheran Live Stream"
-              src="https://www.youtube.com/embed/live_stream?channel=UC4mlfLEMZkdyfi7KMcvzYmw"
+              src=""
               style="border: 0; width: 100%; height: 600px"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
             ></iframe>
-            <p style="margin-top: 0.5em; font-style: italic; color: #666;">If a live service is not currently available, <a href="https://www.youtube.com/@firstlutheranchurchelca2479/streams" target="_blank" rel="noopener noreferrer">watch recent services on YouTube</a>.</p>
+            <p id="yt-status" style="margin-top: 0.5em; font-style: italic; color: #666;">Loading latest service...</p>
           </div>
 
           <p>Our livestreams can also be viewed on YouTube and our Facebook page.</p>
@@ -77,6 +78,26 @@
             <li><a href="https://www.instagram.com/firstlutheranc/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
           </ul>
         </div>
+        <script>
+          (async function () {
+            const iframe = document.getElementById("yt-player");
+            const status = document.getElementById("yt-status");
+            try {
+              const response = await fetch("/api/youtube-latest");
+              if (!response.ok) throw new Error("YouTube endpoint failed");
+              const { videoId } = await response.json();
+              if (!/^[A-Za-z0-9_-]{11}$/.test(videoId || "")) {
+                throw new Error("Invalid YouTube video ID");
+              }
+              iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=0";
+              status.textContent = "";
+            } catch {
+              status.innerHTML =
+                'Could not load video. <a href="https://www.youtube.com/@firstlutheranchurchelca2479/streams" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>';
+              iframe.style.display = "none";
+            }
+          })();
+        </script>
       </div>
     </main>
 
