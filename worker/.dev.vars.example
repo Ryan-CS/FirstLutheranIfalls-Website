@@ -1,2 +1,2 @@
-# Copy to .dev.vars for local testing. Never commit real values.
-YOUTUBE_API_KEY=replace-with-local-youtube-api-key
+# The public site Worker currently requires no local secrets.
+# Keep real secrets out of this repository if future API integrations add any.
