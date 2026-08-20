@@ -23,12 +23,14 @@ Create/import a Cloudflare Worker from the `worker/` directory on this branch.
 - Worker name: `first-lutheran-site-api`
 - Root directory: `worker`
 - Deploy command: `npx wrangler deploy`
-- Secret: `YOUTUBE_API_KEY`
+- Secrets required: none
 
 The Worker exposes:
 
 - `GET /api/health`
 - `GET /api/youtube-latest`
+
+`/api/youtube-latest` mirrors the current production behavior by reading YouTube's public RSS feed for channel `UC4mlfLEMZkdyfi7KMcvzYmw`, extracting the first valid video ID, and caching the response at the edge. It does not use the YouTube Data API and does not require `YOUTUBE_API_KEY`.
 
 The API contains no static site hosting and can stay on the `workers.dev` hostname.
 
@@ -59,10 +61,10 @@ After the Pages and Worker deployments are active:
 1. Open `https://firstlutheranifalls.site/system-status.html`.
 2. Confirm **Frontend host** shows the expected test origin.
 3. Confirm **Public Worker API** reports Connected.
-4. Confirm **YouTube secret** reports Configured without displaying its value.
+4. Confirm **YouTube source** reports Public RSS connected and the public Worker reports no secrets required.
 5. Open `/livestream.html` and verify it loads video data through the Worker.
 6. Open `https://admin.firstlutheranifalls.site/` and test the editor workflow.
 
 ## Safety boundary
 
-No API key or GitHub credential belongs in this repository. Local Worker secrets belong in `worker/.dev.vars` and deployed secrets belong in Cloudflare Worker secrets. `worker/.dev.vars` is intentionally ignored by Git.
+The public website Worker currently has no secrets. The editor Worker still requires its GitHub/editor authentication secrets and must keep them only in Cloudflare Worker secrets. If future public API integrations require credentials, keep those values in Cloudflare and never commit them to this repository or browser code. Local secret files such as `worker/.dev.vars` remain ignored by Git.
