@@ -4,3 +4,7 @@ node_modules/
 *.tmp
 *.temp
 *.swp
+.dev.vars
+worker/.dev.vars
+.wrangler/
+worker/.wrangler/
