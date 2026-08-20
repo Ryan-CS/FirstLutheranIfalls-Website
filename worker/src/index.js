@@ -78,7 +78,7 @@ export default {
     if (url.pathname === "/api/health") {
       return json({
         ok: true,
-        service: "first-lutheran-site-api",
+        service: "firstlutheranifalls-website",
         environment: "firstlutheranifalls.site test",
         youtubeSource: "public-rss",
         secretsRequired: false,
