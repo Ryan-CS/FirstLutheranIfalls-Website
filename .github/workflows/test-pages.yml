@@ -22,6 +22,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate JavaScript syntax
+        run: |
+          node --check worker/src/index.js
+          node --check assets/site-config.js
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
