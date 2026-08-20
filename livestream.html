@@ -6,6 +6,7 @@
     <title>Livestream - First Lutheran</title>
     <link rel="stylesheet" href="/assets/fonts.css" />
     <link rel="stylesheet" href="/assets/site.css" />
+    <script src="/assets/site-config.js"></script>
     <script src="/assets/site.js" defer></script>
   </head>
   <body class="page-livestream">
@@ -82,8 +83,11 @@
           (async function () {
             const iframe = document.getElementById("yt-player");
             const status = document.getElementById("yt-status");
+            const apiBase = window.FLC_SITE_CONFIG?.apiBase || "";
             try {
-              const response = await fetch("/api/youtube-latest");
+              const response = await fetch(`${apiBase}/api/youtube-latest`, {
+                headers: { Accept: "application/json" }
+              });
               if (!response.ok) throw new Error("YouTube endpoint failed");
               const { videoId } = await response.json();
               if (!/^[A-Za-z0-9_-]{11}$/.test(videoId || "")) {
