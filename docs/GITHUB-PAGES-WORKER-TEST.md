@@ -6,8 +6,8 @@ This branch is an isolated migration test for `firstlutheranifalls.site`. It doe
 
 - `firstlutheranifalls.site` — public site hosted by GitHub Pages from this branch.
 - `admin.firstlutheranifalls.site` — editor frontend hosted by GitHub Pages from the Editor repository.
-- `first-lutheran-site-api.ryan-skogstad.workers.dev` — public Cloudflare Worker API in `worker/`.
-- `first-lutheran-editor-api.ryan-skogstad.workers.dev` — authenticated editor Worker API in the Editor repository.
+- `firstlutheranifalls-website.ryan-skogstad.workers.dev` — public Cloudflare Worker API in `worker/`.
+- `firstlutheranifalls-editor.ryan-skogstad.workers.dev` — authenticated editor Worker API in the Editor repository.
 - GitHub remains the canonical content store. The editor test publishes only to this migration branch.
 
 ## GitHub Pages
@@ -20,7 +20,7 @@ The repository may need to be public, or the GitHub account must have a plan tha
 
 Create/import a Cloudflare Worker from the `worker/` directory on this branch.
 
-- Worker name: `first-lutheran-site-api`
+- Worker name: `firstlutheranifalls-website`
 - Root directory: `worker`
 - Deploy command: `npx wrangler deploy`
 - Secrets required: none
@@ -32,7 +32,7 @@ The Worker exposes:
 
 `/api/youtube-latest` mirrors the current production behavior by reading YouTube's public RSS feed for channel `UC4mlfLEMZkdyfi7KMcvzYmw`, extracting the first valid video ID, and caching the response at the edge. It does not use the YouTube Data API and does not require `YOUTUBE_API_KEY`.
 
-The API contains no static site hosting and can stay on the `workers.dev` hostname.
+The API contains no static site hosting and stays available on its `workers.dev` hostname. Preview URLs are disabled because the test frontend only needs the stable Worker URL.
 
 ## GoDaddy DNS for the test domain
 
@@ -52,7 +52,7 @@ CNAME  www    ryan-cs.github.io
 CNAME  admin  ryan-cs.github.io
 ```
 
-Configure `firstlutheranifalls.site` as this repository's Pages custom domain and `admin.firstlutheranifalls.site` as the Editor repository's Pages custom domain. Enable **Enforce HTTPS** after GitHub validates DNS.
+Configure `firstlutheranifalls.site` as this repository's Pages custom domain and `admin.firstlutheranifalls.site` as the Editor repository's Pages custom domain. Enable **Enforce HTTPS** after GitHub validates DNS and issues the certificates.
 
 ## Verification
 
