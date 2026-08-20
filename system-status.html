@@ -49,9 +49,9 @@
             <p><code id="api-url"></code></p>
           </div>
           <div class="system-card">
-            <strong>YouTube secret</strong>
+            <strong>YouTube source</strong>
             <span id="youtube-state" class="system-warn">Waiting for Worker...</span>
-            <p>The secret value never reaches this page.</p>
+            <p>Uses YouTube's public RSS feed; no API key is required.</p>
           </div>
           <div class="system-card">
             <strong>Editor</strong>
@@ -76,9 +76,9 @@
           const data = await response.json();
           document.getElementById("api-state").textContent = "Connected";
           document.getElementById("api-state").className = "system-ok";
-          document.getElementById("youtube-state").textContent = data.youtubeConfigured ? "Configured" : "Not configured";
-          document.getElementById("youtube-state").className = data.youtubeConfigured ? "system-ok" : "system-warn";
-          document.getElementById("detail").textContent = `Worker ${data.service} responded at ${data.timestamp}.`;
+          document.getElementById("youtube-state").textContent = data.youtubeSource === "public-rss" ? "Public RSS connected" : "Unexpected source";
+          document.getElementById("youtube-state").className = data.youtubeSource === "public-rss" ? "system-ok" : "system-warn";
+          document.getElementById("detail").textContent = `Worker ${data.service} responded at ${data.timestamp}. Public Worker secrets required: ${data.secretsRequired ? "yes" : "no"}.`;
         } catch (error) {
           document.getElementById("api-state").textContent = "Unavailable";
           document.getElementById("detail").textContent = `Worker check failed: ${error.message}`;
