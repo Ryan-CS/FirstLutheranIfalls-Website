@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>System Verification - First Lutheran</title>
+    <link rel="stylesheet" href="/assets/fonts.css" />
+    <link rel="stylesheet" href="/assets/site.css" />
+    <script src="/assets/site-config.js"></script>
+    <script src="/assets/site.js" defer></script>
+    <style>
+      .system-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .system-card { border: 1px solid #d7d7d7; border-radius: 12px; padding: 1rem; background: #fff; }
+      .system-card strong { display: block; margin-bottom: .35rem; }
+      .system-ok { color: #176c3a; }
+      .system-warn { color: #8a4d00; }
+      code { word-break: break-word; }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="navbar">
+        <div class="brand">
+          <span class="brand__title">First Lutheran Church</span>
+          <span class="brand__subtitle">Migration Test / System Verification</span>
+        </div>
+        <nav class="nav-links" data-open="false">
+          <a href="/">Public Site</a>
+          <a href="/livestream.html">Livestream</a>
+          <a href="https://admin.firstlutheranifalls.site/">Editor</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="section">
+      <div class="section__inner">
+        <h1>System Verification</h1>
+        <p>This page verifies the test architecture without exposing any credentials.</p>
+
+        <div class="system-grid">
+          <div class="system-card">
+            <strong>Frontend host</strong>
+            <span class="system-ok">GitHub Pages</span>
+            <p><code id="page-origin"></code></p>
+          </div>
+          <div class="system-card">
+            <strong>Public Worker API</strong>
+            <span id="api-state" class="system-warn">Checking...</span>
+            <p><code id="api-url"></code></p>
+          </div>
+          <div class="system-card">
+            <strong>YouTube secret</strong>
+            <span id="youtube-state" class="system-warn">Waiting for Worker...</span>
+            <p>The secret value never reaches this page.</p>
+          </div>
+          <div class="system-card">
+            <strong>Editor</strong>
+            <a href="https://admin.firstlutheranifalls.site/">Open test editor</a>
+            <p>Editor writes are handled by a separate authenticated Worker.</p>
+          </div>
+        </div>
+
+        <p id="detail" style="margin-top: 1rem;"></p>
+      </div>
+    </main>
+
+    <script>
+      (async function () {
+        const config = window.FLC_SITE_CONFIG || {};
+        const apiUrl = `${config.apiBase || ""}/api/health`;
+        document.getElementById("page-origin").textContent = location.origin;
+        document.getElementById("api-url").textContent = apiUrl;
+        try {
+          const response = await fetch(apiUrl, { headers: { Accept: "application/json" } });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
+          document.getElementById("api-state").textContent = "Connected";
+          document.getElementById("api-state").className = "system-ok";
+          document.getElementById("youtube-state").textContent = data.youtubeConfigured ? "Configured" : "Not configured";
+          document.getElementById("youtube-state").className = data.youtubeConfigured ? "system-ok" : "system-warn";
+          document.getElementById("detail").textContent = `Worker ${data.service} responded at ${data.timestamp}.`;
+        } catch (error) {
+          document.getElementById("api-state").textContent = "Unavailable";
+          document.getElementById("detail").textContent = `Worker check failed: ${error.message}`;
+        }
+      })();
+    </script>
+  </body>
+</html>
