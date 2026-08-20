@@ -2,8 +2,5 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "first-lutheran-site-api",
   "main": "./src/index.js",
-  "compatibility_date": "2026-08-20",
-  "secrets": {
-    "required": ["YOUTUBE_API_KEY"]
-  }
+  "compatibility_date": "2026-08-20"
 }
