@@ -1,37 +1,25 @@
-# Cloudflare Pages Deployment
+# Legacy Cloudflare Pages notes
 
-The public site deploys from this repository with Cloudflare Pages Git integration.
+Production previously targeted Cloudflare Pages from this repository. The `migration/github-pages-worker-test` branch instead demonstrates GitHub Pages for static hosting plus a separate Cloudflare Worker for dynamic API calls.
 
-## Required configuration
+## Livestream behavior
 
-- Production branch: `main`
-- Framework preset: None
-- Root directory: repository root
-- Build command: `exit 0`
-- Build output directory: `.`
-- Secret: `YOUTUBE_API_KEY`
+The livestream lookup now mirrors the deployed First Lutheran server: it reads YouTube's public RSS feed for channel `UC4mlfLEMZkdyfi7KMcvzYmw`, extracts the newest valid video ID, and returns it as JSON.
 
-Configure `YOUTUBE_API_KEY` in the Cloudflare Pages project after the project
-exists. It is a Cloudflare secret, not a repository file or browser setting.
+No `YOUTUBE_API_KEY` is required for this behavior.
 
-## Livestream function
+The compatibility function at `functions/api/youtube-latest.js` remains in the repository, but the migration test's active API implementation is `worker/src/index.js`, exposed by the `first-lutheran-site-api` Worker as `GET /api/youtube-latest`.
 
-`functions/api/youtube-latest.js` is served as
-`GET /api/youtube-latest`. It checks the configured YouTube channel for an
-active embeddable live stream, then falls back to the newest embeddable video.
-The response contains only `videoId` and `source`.
+Successful responses are cached for five minutes at the edge. Failed responses are not cached.
 
-Successful responses are cached for five minutes at the edge. Failed responses
-are not cached.
+## Local compatibility test
 
-## Local test
-
-Run the function tests without calling YouTube:
+Run the function tests without contacting YouTube:
 
 ```sh
 node --experimental-default-type=module --test tests/youtube-latest.test.js
 ```
 
-The test suite uses mocked YouTube responses. Local Pages emulation with
-Wrangler is optional; the deployed project needs the `YOUTUBE_API_KEY` secret
-before the livestream endpoint can return a video.
+The tests use a mocked RSS response and require no secret configuration.
+
+For the current migration test deployment instructions, see `docs/GITHUB-PAGES-WORKER-TEST.md`.
