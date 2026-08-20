@@ -1,128 +1,75 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  buildSearchUrl,
   handleRequest,
-  resolveVideo
+  resolveVideo,
+  videoIdFromFeed,
 } from "../functions/api/youtube-latest.js";
 
-const liveVideoId = "liveVideo01";
 const latestVideoId = "latestVid02";
 
-function context(apiKey = "test-api-key") {
+function context() {
   return {
-    env: { YOUTUBE_API_KEY: apiKey },
-    request: new Request("https://example.pages.dev/api/youtube-latest")
+    request: new Request("https://example.pages.dev/api/youtube-latest"),
   };
 }
 
-function mockFetch(responses) {
+function feedXml(videoId = latestVideoId) {
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015"><entry><yt:videoId>${videoId}</yt:videoId></entry></feed>`;
+}
+
+test("returns the newest video ID from the public YouTube RSS feed", async () => {
   const calls = [];
-  return {
-    calls,
-    fetchImpl: async (url) => {
-      calls.push(new URL(url));
-      const next = responses.shift();
-      if (next instanceof Error) throw next;
-      return next;
-    }
+  const fetchImpl = async (url) => {
+    calls.push(String(url));
+    return new Response(feedXml(), { status: 200 });
   };
-}
-
-function youtubeResponse(items, status = 200) {
-  return new Response(JSON.stringify({ items }), { status });
-}
-
-test("returns an active live stream when YouTube reports one", async () => {
-  const mock = mockFetch([
-    youtubeResponse([{ id: { videoId: liveVideoId } }])
-  ]);
 
   const response = await handleRequest(context(), {
-    fetchImpl: mock.fetchImpl,
-    cache: null
+    fetchImpl,
+    cache: null,
   });
 
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), {
-    videoId: liveVideoId,
-    source: "live"
+    videoId: latestVideoId,
+    source: "rss",
   });
-  assert.equal(mock.calls.length, 1);
-  assert.equal(mock.calls[0].searchParams.get("eventType"), "live");
-  assert.equal(mock.calls[0].searchParams.get("videoEmbeddable"), "true");
-  assert.equal(response.headers.get("Cache-Control"), "public, max-age=60, s-maxage=300, stale-while-revalidate=60");
+  assert.equal(calls.length, 1);
+  assert.match(calls[0], /youtube\.com\/feeds\/videos\.xml\?channel_id=/);
+  assert.equal(
+    response.headers.get("Cache-Control"),
+    "public, max-age=60, s-maxage=300, stale-while-revalidate=60",
+  );
 });
 
-test("falls back to the newest embeddable video when no live stream exists", async () => {
-  const mock = mockFetch([
-    youtubeResponse([]),
-    youtubeResponse([{ id: { videoId: latestVideoId } }])
-  ]);
-
+test("RSS lookup requires no API key", async () => {
   const result = await resolveVideo({
-    apiKey: "test-api-key",
-    fetchImpl: mock.fetchImpl
+    fetchImpl: async () => new Response(feedXml(), { status: 200 }),
   });
 
-  assert.deepEqual(result, { videoId: latestVideoId, source: "latest" });
-  assert.equal(mock.calls.length, 2);
-  assert.equal(mock.calls[0].searchParams.get("eventType"), "live");
-  assert.equal(mock.calls[1].searchParams.get("order"), "date");
+  assert.deepEqual(result, { videoId: latestVideoId, source: "rss" });
 });
 
-test("returns a generic failure when YouTube returns an error", async () => {
-  const mock = mockFetch([youtubeResponse([], 403)]);
-
+test("returns a generic failure when the YouTube feed returns an error", async () => {
   const response = await handleRequest(context(), {
-    fetchImpl: mock.fetchImpl,
-    cache: null
+    fetchImpl: async () => new Response("unavailable", { status: 503 }),
+    cache: null,
   });
 
   assert.equal(response.status, 502);
   assert.deepEqual(await response.json(), {
-    error: "Unable to load a YouTube video"
+    error: "Unable to load a YouTube video",
   });
 });
 
-test("rejects malformed or empty YouTube results", async () => {
-  const malformed = mockFetch([
-    new Response("not json", { status: 200 })
-  ]);
-  const malformedResponse = await handleRequest(context(), {
-    fetchImpl: malformed.fetchImpl,
-    cache: null
-  });
-  assert.equal(malformedResponse.status, 502);
+test("rejects malformed or invalid feed video IDs", async () => {
+  assert.equal(videoIdFromFeed("<feed></feed>"), null);
+  assert.equal(videoIdFromFeed(feedXml("bad")), null);
 
-  const empty = mockFetch([
-    youtubeResponse([]),
-    youtubeResponse([])
-  ]);
-  const emptyResponse = await handleRequest(context(), {
-    fetchImpl: empty.fetchImpl,
-    cache: null
+  const response = await handleRequest(context(), {
+    fetchImpl: async () => new Response("<feed></feed>", { status: 200 }),
+    cache: null,
   });
-  assert.equal(emptyResponse.status, 502);
-});
-
-test("requires a secret and never returns it to the browser", async () => {
-  const secret = "do-not-expose-this-key";
-  const missingKeyResponse = await handleRequest(context(""), {
-    cache: null
-  });
-  assert.equal(missingKeyResponse.status, 503);
-  assert.equal((await missingKeyResponse.text()).includes(secret), false);
-
-  const mock = mockFetch([
-    youtubeResponse([{ id: { videoId: liveVideoId } }])
-  ]);
-  const successResponse = await handleRequest(context(secret), {
-    fetchImpl: mock.fetchImpl,
-    cache: null
-  });
-  const body = await successResponse.text();
-
-  assert.equal(body.includes(secret), false);
-  assert.equal(buildSearchUrl(secret, { eventType: "live" }).searchParams.get("key"), secret);
+  assert.equal(response.status, 502);
 });
