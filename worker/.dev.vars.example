@@ -1,0 +1,2 @@
+# Copy to .dev.vars for local testing. Never commit real values.
+YOUTUBE_API_KEY=replace-with-local-youtube-api-key
