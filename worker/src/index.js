@@ -79,7 +79,7 @@ export default {
       return json({
         ok: true,
         service: "firstlutheranifalls-website",
-        environment: "firstlutheranifalls.site test",
+        environment: "firstlutheranifalls.org",
         youtubeSource: "public-rss",
         secretsRequired: false,
         timestamp: new Date().toISOString(),
