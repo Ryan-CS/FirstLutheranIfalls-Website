@@ -1,5 +1,5 @@
 window.FLC_SITE_CONFIG = Object.freeze({
-  environment: "firstlutheranifalls.site-test",
+  environment: "firstlutheranifalls.org",
   apiBase: "https://firstlutheranifalls-website.ryan-skogstad.workers.dev",
-  editorUrl: "https://admin.firstlutheranifalls.site/"
+  editorUrl: "https://admin.firstlutheranifalls.org/"
 });

@@ -46,7 +46,7 @@ jobs:
           for dir in assets files gdpr posts uploads; do
             if [ -d "$dir" ]; then cp -R -- "$dir" "_site/$dir"; fi
           done
-          printf '%s\n' 'firstlutheranifalls.site' > _site/CNAME
+          printf '%s\n' 'firstlutheranifalls.org' > _site/CNAME
           touch _site/.nojekyll
 
       - name: Upload Pages artifact

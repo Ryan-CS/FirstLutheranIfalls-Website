@@ -1,18 +1,18 @@
 # GitHub Pages + Cloudflare Worker test
 
-This branch is an isolated migration test for `firstlutheranifalls.site`. It does not change the production `main` branch or `firstlutheranifalls.org` deployment.
+This branch (`migration/github-pages-worker-test`) is the live deployment for `firstlutheranifalls.org`.
 
 ## Test architecture
 
-- `firstlutheranifalls.site` — public site hosted by GitHub Pages from this branch.
-- `admin.firstlutheranifalls.site` — editor frontend hosted by GitHub Pages from the Editor repository.
+- `firstlutheranifalls.org` — public site hosted by GitHub Pages from this branch.
+- `admin.firstlutheranifalls.org` — editor frontend hosted by GitHub Pages from the Editor repository.
 - `firstlutheranifalls-website.ryan-skogstad.workers.dev` — public Cloudflare Worker API in `worker/`.
 - `firstlutheranifalls-editor.ryan-skogstad.workers.dev` — authenticated editor Worker API in the Editor repository.
 - GitHub remains the canonical content store. The editor test publishes only to this migration branch.
 
 ## GitHub Pages
 
-Repository Settings → Pages must use **GitHub Actions** as the source. The workflow `.github/workflows/test-pages.yml` publishes only public website content and writes `firstlutheranifalls.site` as the test custom domain.
+Repository Settings → Pages must use **GitHub Actions** as the source. The workflow `.github/workflows/test-pages.yml` publishes only public website content and writes `firstlutheranifalls.org` as the custom domain.
 
 The repository may need to be public, or the GitHub account must have a plan that supports Pages for private repositories.
 
@@ -52,18 +52,18 @@ CNAME  www    ryan-cs.github.io
 CNAME  admin  ryan-cs.github.io
 ```
 
-Configure `firstlutheranifalls.site` as this repository's Pages custom domain and `admin.firstlutheranifalls.site` as the Editor repository's Pages custom domain. Enable **Enforce HTTPS** after GitHub validates DNS and issues the certificates.
+Configure `firstlutheranifalls.org` as this repository's Pages custom domain and `admin.firstlutheranifalls.org` as the Editor repository's Pages custom domain. Enable **Enforce HTTPS** after GitHub validates DNS and issues the certificates.
 
 ## Verification
 
 After the Pages and Worker deployments are active:
 
-1. Open `https://firstlutheranifalls.site/system-status.html`.
+1. Open `https://firstlutheranifalls.org/system-status.html`.
 2. Confirm **Frontend host** shows the expected test origin.
 3. Confirm **Public Worker API** reports Connected.
 4. Confirm **YouTube source** reports Public RSS connected and the public Worker reports no secrets required.
 5. Open `/livestream.html` and verify it loads video data through the Worker.
-6. Open `https://admin.firstlutheranifalls.site/` and test the editor workflow.
+6. Open `https://admin.firstlutheranifalls.org/` and test the editor workflow.
 
 ## Safety boundary
 
